@@ -1,5 +1,9 @@
 black 
-notebook
-jupyter_contrib_nbextensions 
+pylint
 numpy  
 scipy
+notebook
+jupyter_contrib_nbextensions 
+ipykernel
+autopep8
+matplotlib
