@@ -1,0 +1,5 @@
+black 
+notebook
+jupyter_contrib_nbextensions 
+numpy  
+scipy
