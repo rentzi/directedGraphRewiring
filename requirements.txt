@@ -1,0 +1,6 @@
+black # formats code appearance
+notebook # jupyter notebook
+jupyter_contrib_nbextensions 
+numpy  
+
+scipy
