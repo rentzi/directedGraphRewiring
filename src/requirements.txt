@@ -7,3 +7,5 @@ jupyter_contrib_nbextensions
 ipykernel
 autopep8
 matplotlib
+pandas
+ipdb
