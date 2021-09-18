@@ -1,0 +1,9 @@
+
+
+SCHEME: ["AAdvectionOut", "AConsensusIn"]
+FLAG_REWIRE_METHOD: ["out", "in"]
+FLAG_ALG: ["advection", "consensus"]
+N_VERTEX: 100
+N_REWIRING_VEC: [100, 200, 400, 800, 1600]
+P_RAND: 0
+TAU: 1

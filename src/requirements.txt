@@ -9,3 +9,4 @@ autopep8
 matplotlib
 pandas
 ipdb
+pyyaml

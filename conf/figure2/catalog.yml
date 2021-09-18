@@ -1,0 +1,4 @@
+
+
+# data path for the result of the analyses that reproduce figure 2
+intermediate_data: data/02_intermediate/figure2_data.pickle
