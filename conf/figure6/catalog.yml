@@ -1,0 +1,9 @@
+
+# raw data path
+directory_load: data/01_raw/
+
+# analysis flag
+flag: _cons_adv_50_
+
+# data path for the intermediate result that reproduce figure 4
+intermediate_data: data/02_intermediate/figure6_data.pickle

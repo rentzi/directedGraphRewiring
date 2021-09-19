@@ -6,4 +6,4 @@ directory_load: data/01_raw/
 flag: _cons_adv_50_
 
 # data path for the intermediate result that reproduce figure 4
-intermediate_data: data/02_intermediate/figure4_data.pickle
+intermediate_data: data/02_intermediate/figure5_data.pickle

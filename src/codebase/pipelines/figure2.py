@@ -23,43 +23,6 @@ from src.codebase.nodes import rewiring_iterations
 plt.rcParams["figure.figsize"] = [20, 10]
 
 
-def plot_figure(data):
-    """Plot directed graphs for different rewiring schemes
-
-    Args:
-        data ([type]): Data produced by .create() function
-    """
-    for scheme in data:
-        for ind, key in enumerate(data[scheme].keys()):
-            ttl = str(key) + " rewirings"
-            plt.subplot(1, 6, ind + 1)
-            plt.title(ttl)
-            plt.imshow(data[scheme][key], cmap="Greys")
-        plt.show()
-
-
-def save_data(intermediate_data: Dict[str, np.ndarray]):
-    """Save figure 2's data for quick reproduction
-
-    Args:
-        intermediate_data (Dict[str, np.ndarray]): [description]
-    """
-    # write intermediate result in path
-    with open(CATALOG["intermediate_data"], "wb") as file:
-        pickle.dump(intermediate_data, file)
-
-
-def load_data():
-    """Load figure 2's intermediate data for quick reproduction
-
-    Returns:
-        Dict[str, np.ndarray]: loaded data
-    """
-    with open(CATALOG["intermediate_data"], "rb") as file:
-        data = pickle.load(file)
-    return data
-
-
 def create(
     params: Dict[str, Any],
 ) -> Dict[str, np.ndarray]:
@@ -109,3 +72,40 @@ def create(
     # plot graphs
     plot_figure(outs)
     return outs
+
+
+def save_data(intermediate_data: Dict[str, np.ndarray]):
+    """Save figure 2's data for quick reproduction
+
+    Args:
+        intermediate_data (Dict[str, np.ndarray]): [description]
+    """
+    # write intermediate result in path
+    with open(CATALOG["intermediate_data"], "wb") as file:
+        pickle.dump(intermediate_data, file)
+
+
+def load_data():
+    """Load figure 2's intermediate data for quick reproduction
+
+    Returns:
+        Dict[str, np.ndarray]: loaded data
+    """
+    with open(CATALOG["intermediate_data"], "rb") as file:
+        data = pickle.load(file)
+    return data
+
+
+def plot_figure(data):
+    """Plot directed graphs for different rewiring schemes
+
+    Args:
+        data ([type]): Data produced by .create() function
+    """
+    for scheme in data:
+        for ind, key in enumerate(data[scheme].keys()):
+            ttl = str(key) + " rewirings"
+            plt.subplot(1, 6, ind + 1)
+            plt.title(ttl)
+            plt.imshow(data[scheme][key], cmap="Greys")
+        plt.show()

@@ -1,0 +1,13 @@
+
+# general pipeline parameters
+pRand: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1]
+repetitions: 100
+inOutThresh: [15,]  # 20, 25, 30
+pR: [0,0.2,0.4,0.6]
+numNodes: 100
+MARKERS: ['o','v','>','<']
+COLORS: ['blue','orange','green','red']
+
+numIterations: 100
+P_RAND_SAMPLE: [0, 0.2, 0.4, 0.6]
+densityType: ["Simple", "Intermediate"]

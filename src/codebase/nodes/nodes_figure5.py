@@ -309,40 +309,6 @@ def convert_nodes_to_unit(REP, FLAG, inOutDict, p):
     nodesAverage = nodesAverage / REP
 
 
-def plot_panel_4(p, inOutThresh):
-    degOutTT = {}
-    for thre in inOutThresh:
-        degOutTest = []
-        for dd in np.arange(1, 100):
-            if len(invPathDict[p, thre, dd]) != 0:
-                degOutTest.append(dd)
-        degOutTT[p, thre] = degOutTest
-        meanInvPath[p, thre] = np.zeros(len(degOutTest))
-        stdInvPath[p, thre] = np.zeros(len(degOutTest))
-        for ind, d in enumerate(degOutTest):
-            meanInvPath[p, thre][ind] = np.mean(invPathDict[p, thre, d])
-            stdInvPath[p, thre][ind] = np.std(invPathDict[p, thre, d])
-
-    # plt.errorbar(degOutTest[0:15],1/meanInvPath[0:15],stdInvPath[0:15])
-    for thre in inOutThresh:
-        labelT = str(thre)
-        # plt.errorbar(degOutTT[p,thre][0:69],1/meanInvPath[p,thre][0:69],stdInvPath[p,thre][0:69],label= labelT)
-        plt.errorbar(
-            degOutTT[p, thre][0:20],
-            1 / meanInvPath[p, thre][0:20],
-            stdInvPath[p, thre][0:20],
-            label=labelT,
-        )
-        plt.ylim((0.8, 3.8))
-
-    # save figure
-    filePathPlot = os.path.join(
-        project_path,
-        "data/03_figures/syncfire/pathlengthSmallp0.eps",
-    )
-    plt.savefig(filePathPlot, format="eps", dpi=1200)
-
-
 def plot_panel_3(P_R, nodesAverage):
     nodesAverageAll = np.zeros((len(nodesAverage), 1))
     for ind, p in enumerate(P_R):
@@ -350,6 +316,7 @@ def plot_panel_3(P_R, nodesAverage):
 
     # plot
     plt.plot(P_R, nodesAverageAll)
+    plt.show()
     return p
 
 
@@ -371,6 +338,7 @@ def plot_panel_2(IN_OUT_THRESH, P_R, nodesAverage):
             color=colors[ind],
             linewidth=2,
         )
+    plt.show()
 
     # save figure
     filePathPlot = os.path.join(
@@ -411,6 +379,7 @@ def plot_panel_1(
         )
         plt.xticks([1, 2])
         plt.yticks([0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+    plt.show()
 
     # save figure
     filePathPlot = os.path.join(

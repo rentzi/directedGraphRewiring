@@ -12,7 +12,7 @@ with open("project_context.yml", "r") as file:
 project_path = context["project_path"]
 
 # load data catalog
-catalog_path = os.path.join(project_path, "conf/figure4/catalog.yml")
+catalog_path = os.path.join(project_path, "conf/figure5/catalog.yml")
 with open(catalog_path, "r") as file:
     CATALOG = yaml.safe_load(file)
 DIR_LOAD = CATALOG["directory_load"]
@@ -114,12 +114,3 @@ def plot_figure(data: Dict[str, Any]):
 
     # plot panel 2
     nodes_figure5.plot_panel_2(IN_OUT_THRESH, P_R, nodesAverage)
-
-    # plot panel 3
-    p = nodes_figure5.plot_panel_3(P_R, nodesAverage)
-
-    # plot panel 4
-    nodes_figure5.plot_panel_4(p)
-
-    # nodes to unit
-    nodes_figure5.convert_nodes_to_unit(REP, FLAG, inOutDict, p)
