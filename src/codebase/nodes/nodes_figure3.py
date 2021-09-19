@@ -1,25 +1,14 @@
 # Import dependencies
-import os
-import sys
 import numpy as np
-import matplotlib.pyplot as plt
-import random
 import networkx as nx
-from scipy import linalg
-from typing import Dict, Any
-
-# import custom functions
-from codebase import (
-    utils,
-)
 
 
-def convert_from_adj2networkX(A, weight_d="binary"):
+def convert_from_adj2networkX(A, weight_d=str):
     """Convert from adjacency matrix to network graph
 
     Args:
         A ([type]): [description]
-        weight_d (str, optional): [description]. Defaults to "binary".
+        weight_d (str, optional): e.g., "binary".
 
     Returns:
         [type]: [description]

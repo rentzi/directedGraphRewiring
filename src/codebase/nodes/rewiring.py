@@ -1,10 +1,6 @@
 import numpy as np
-from codebase import utils
+from src.codebase.nodes import utils
 from scipy import linalg
-from matplotlib import pyplot as plt
-import pandas as pd
-from codebase import utils
-from ipdb import set_trace as st
 
 
 def get_nodes_receiving_and_sending_edges(adj_matx):
@@ -25,10 +21,18 @@ def get_nodes_receiving_and_sending_edges(adj_matx):
     n_nodes = adj_matx.shape[0]
 
     # deg[i] = number of incoming edges to the i+1 node
-    degIn = np.sum(adj_matx > 0, axis=0, keepdims=False,)
+    degIn = np.sum(
+        adj_matx > 0,
+        axis=0,
+        keepdims=False,
+    )
 
     # deg[i] = number of outgoing edges from the i+1 node
-    degOut = np.sum(adj_matx > 0, axis=1, keepdims=False,)
+    degOut = np.sum(
+        adj_matx > 0,
+        axis=1,
+        keepdims=False,
+    )
 
     # get nodes' with in-degrees between 0 & n_nodes (non included)
     nodes_receiving = np.where((degIn > 0) & (degIn < n_nodes - 1))
@@ -37,13 +41,18 @@ def get_nodes_receiving_and_sending_edges(adj_matx):
     nodes_sending = np.where((degOut > 0) & (degOut < n_nodes - 1))
 
     # get nodes with both indegrees and outdegrees >0 & <n_nodes
-    nodes_receiving_and_sending = np.intersect1d(nodes_receiving[0], nodes_sending[0],)
+    nodes_receiving_and_sending = np.intersect1d(
+        nodes_receiving[0],
+        nodes_sending[0],
+    )
 
     return nodes_receiving_and_sending
 
 
 def pick_node_with_in_out_edges(
-    adj_matx, tau, p_rnd_rewire,
+    adj_matx,
+    tau,
+    p_rnd_rewire,
 ):
     """
     Chose a node at random, keep a record of that node and other nodes
@@ -67,13 +76,14 @@ def pick_node_with_in_out_edges(
     n_nodes = adj_matx.shape[0]
 
     # get all nodes receiving and sending edges
-    nodes_receiving_and_sending = get_nodes_receiving_and_sending_edges(
-        adj_matx
-    )
+    nodes_receiving_and_sending = get_nodes_receiving_and_sending_edges(adj_matx)
 
     # If there are none, return Adjacency matrix
     if utils.check_is_null_exception(
-        nodes_receiving_and_sending, adj_matx, tau, p_rnd_rewire,
+        nodes_receiving_and_sending,
+        adj_matx,
+        tau,
+        p_rnd_rewire,
     ):
         return adj_matx
 
@@ -160,7 +170,10 @@ def generate_rand_Adj(n_nodes, edges, **kwargs):
             the verticesXvertices random digraph
 
     """
-    for (key, value,) in kwargs.items():
+    for (
+        key,
+        value,
+    ) in kwargs.items():
         if key == "weightDistribution":
             weightDistribution = value
         elif key == "mu":
@@ -175,14 +188,14 @@ def generate_rand_Adj(n_nodes, edges, **kwargs):
     maxConnections = int(n_nodes * (n_nodes - 1))
     # print(
     #    "(generate_rand_Adj) maxConnections:", maxConnections,
-    #)
+    # )
     # print(
     #    "(generate_rand_Adj) weight distribution:", weightDistribution,
-    #)
+    # )
 
     try:
 
-        #print("(generate_rand_Adj) Generating random adjacency matrix ...")
+        # print("(generate_rand_Adj) Generating random adjacency matrix ...")
 
         # sample weights from a lognormal distribution
         if weightDistribution == "lognormal":
@@ -192,8 +205,12 @@ def generate_rand_Adj(n_nodes, edges, **kwargs):
                     0.0,
                     1.0,
                 )
-                #print("(generate_rand_Adj) default mu:{}, sig:{}:".format(mu, sig,))
-            randWeights = np.random.lognormal(mean=mu, sigma=sig, size=edges,)
+                # print("(generate_rand_Adj) default mu:{}, sig:{}:".format(mu, sig,))
+            randWeights = np.random.lognormal(
+                mean=mu,
+                sigma=sig,
+                size=edges,
+            )
 
         # ... from a normal distribution
         elif weightDistribution == "normal":
@@ -203,8 +220,12 @@ def generate_rand_Adj(n_nodes, edges, **kwargs):
                     1.0,
                     0.25,
                 )
-                #print("(generate_rand_Adj) default mu:{}, sig:{}:".format(mu, sig,))
-            randWeights = np.random.normal(loc=mu, scale=sig, size=edges,)
+                # print("(generate_rand_Adj) default mu:{}, sig:{}:".format(mu, sig,))
+            randWeights = np.random.normal(
+                loc=mu,
+                scale=sig,
+                size=edges,
+            )
             ind = np.where(randWeights < 0)
             randWeights[ind] = EPSILON
 
@@ -222,7 +243,7 @@ def generate_rand_Adj(n_nodes, edges, **kwargs):
         #        randWeights.min(),
         #        randWeights.max(),
         #    )
-        #)
+        # )
 
         # Normalize weights such that their sum equals the number of edges
         if (weightDistribution == "normal") | (weightDistribution == "lognormal"):
@@ -239,7 +260,7 @@ def generate_rand_Adj(n_nodes, edges, **kwargs):
             #        normRandWeights.min(),
             #        normRandWeights.max(),
             #    )
-            #)
+            # )
         else:
             normRandWeights = randWeights
 
@@ -265,7 +286,7 @@ def generate_rand_Adj(n_nodes, edges, **kwargs):
         #        adj_matx.min(),
         #        adj_matx.max(),
         #    )
-        #)
+        # )
 
     except:
         if edges > maxConnections or edges < 0:
@@ -273,12 +294,16 @@ def generate_rand_Adj(n_nodes, edges, **kwargs):
         else:
             print("error")
             return -1
-    #print("(generate_rand_Adj) Completed")
+    # print("(generate_rand_Adj) Completed")
     return adj_matx
 
 
 def run_out_dynamics(
-    AInit, p_rnd_rewire, n_rewirings, tau, flag_alg,
+    AInit,
+    p_rnd_rewire,
+    n_rewirings,
+    tau,
+    flag_alg,
 ):
     """
     Rewires iteratively a matrix A. At each iteration the rewiring can be random
@@ -311,63 +336,111 @@ def run_out_dynamics(
     n_nodes = adj_matx.shape[0]
 
     for iter_i in range(n_rewirings):
-        #print('iteration is '+str(iter_i))
+        # print('iteration is '+str(iter_i))
 
         (not_x, node_x,) = pick_node_with_in_out_edges(
-            adj_matx, tau, p_rnd_rewire,
+            adj_matx,
+            tau,
+            p_rnd_rewire,
         )
 
         # find the nodes with no incomings from "x"
-        x_non_head_bool = 1.0 * np.logical_not(adj_matx[not_x, node_x, ])
-        #print('makes its nonzeros zeros and vice versa')
+        x_non_head_bool = 1.0 * np.logical_not(
+            adj_matx[
+                not_x,
+                node_x,
+            ]
+        )
+        # print('makes its nonzeros zeros and vice versa')
         # print(x_non_head_bool)
 
         # rewire by network diffusion
         if np.random.random_sample() >= p_rnd_rewire:
 
             # calculate the consensus or advection kernel
-            if flag_alg == 'consensus':
+            if flag_alg == "consensus":
                 kernel = compute_consensus_kernel(adj_matx, tau)
-            elif flag_alg == 'advection':
+            elif flag_alg == "advection":
                 kernel = compute_advection_kernel(adj_matx, tau)
 
             # get node x's coldest head (excluding "x")
             x_heads = adj_matx[:, node_x].nonzero()[0]
-            x_cut_head = x_heads[np.argmin(kernel[x_heads, node_x, ])]
+            x_cut_head = x_heads[
+                np.argmin(
+                    kernel[
+                        x_heads,
+                        node_x,
+                    ]
+                )
+            ]
 
             # Get x's hottest non-head (excluding "x")
             x_non_heads = not_x[x_non_head_bool.nonzero()[0]]
-            x_wire_non_head = x_non_heads[np.argmax(kernel[x_non_heads, node_x, ])]
+            x_wire_non_head = x_non_heads[
+                np.argmax(
+                    kernel[
+                        x_non_heads,
+                        node_x,
+                    ]
+                )
+            ]
 
         else:  # else we randomly rewire
 
             # randomly pick one of x's head (excluding "x")
-            x_heads = adj_matx[:, node_x, ].nonzero()[0]
+            x_heads = adj_matx[
+                :,
+                node_x,
+            ].nonzero()[0]
             x_cut_head = np.random.choice(x_heads)
 
             x_wire_non_head = not_x[np.random.choice(x_non_head_bool.nonzero()[0])]
-            #print("x_wire_non_head is :"+str(x_wire_non_head))
+            # print("x_wire_non_head is :"+str(x_wire_non_head))
 
         # Warning if exception
         if x_cut_head == x_wire_non_head:
             print("PROBLEM")
-            print("The A nodes rewired are %d and %d with weight %f"
-                  % (x_wire_non_head, node_x, adj_matx[x_cut_head, node_x, ],)
-                  )
-            print("The A nodes disconnected are %d and %d" % (x_cut_head, node_x,))
+            print(
+                "The A nodes rewired are %d and %d with weight %f"
+                % (
+                    x_wire_non_head,
+                    node_x,
+                    adj_matx[
+                        x_cut_head,
+                        node_x,
+                    ],
+                )
+            )
+            print(
+                "The A nodes disconnected are %d and %d"
+                % (
+                    x_cut_head,
+                    node_x,
+                )
+            )
 
         # if rewired by network consensus: the chosen node's edge to its coldest target is
         # switched towards its hottest non target (non-tail or tail)
         # if randomly rewired: one of the chosen node's target is picked randomly and
         # replaced with a non target picked randomly
-        adj_matx[x_wire_non_head, node_x, ] = adj_matx[x_cut_head, node_x, ]
-        adj_matx[x_cut_head, node_x, ] = 0
+        adj_matx[x_wire_non_head, node_x,] = adj_matx[
+            x_cut_head,
+            node_x,
+        ]
+        adj_matx[
+            x_cut_head,
+            node_x,
+        ] = 0
 
     return adj_matx
 
 
 def run_in_dynamics(
-    AInit, p_rnd_rewire, n_rewirings, tau, flag_alg,
+    AInit,
+    p_rnd_rewire,
+    n_rewirings,
+    tau,
+    flag_alg,
 ):
     """
     Rewires iteratively a matrix A. At each iteration the rewiring can be random
@@ -399,32 +472,59 @@ def run_in_dynamics(
 
         # randomly pick a node "x"
         (not_x, node_x,) = pick_node_with_in_out_edges(
-            adj_matx, tau, p_rnd_rewire,
+            adj_matx,
+            tau,
+            p_rnd_rewire,
         )
 
         # Identify nodes that do not send an edge to "x
-        x_non_tail_bool = 1.0 * np.logical_not(adj_matx[node_x, not_x, ])
+        x_non_tail_bool = 1.0 * np.logical_not(
+            adj_matx[
+                node_x,
+                not_x,
+            ]
+        )
 
         if np.random.random_sample() >= p_rnd_rewire:  # rewire by network diffusion
 
             # calculate the consensus or advection kernel
-            if flag_alg == 'consensus':
+            if flag_alg == "consensus":
                 kernel = compute_consensus_kernel(adj_matx, tau)
-            elif flag_alg == 'advection':
+            elif flag_alg == "advection":
                 kernel = compute_advection_kernel(adj_matx, tau)
 
             # get node x's coldest tail (excluding "x")
-            x_tails = adj_matx[node_x, :, ].nonzero()[0]
-            x_cut_tail = x_tails[np.argmin(kernel[node_x, x_tails, ])]
+            x_tails = adj_matx[
+                node_x,
+                :,
+            ].nonzero()[0]
+            x_cut_tail = x_tails[
+                np.argmin(
+                    kernel[
+                        node_x,
+                        x_tails,
+                    ]
+                )
+            ]
 
             # get node x's hottest non-tail (excluding "x")
             x_non_tails = not_x[x_non_tail_bool.nonzero()[0]]
-            x_wire_non_tail = x_non_tails[np.argmax(kernel[node_x, x_non_tails, ])]
+            x_wire_non_tail = x_non_tails[
+                np.argmax(
+                    kernel[
+                        node_x,
+                        x_non_tails,
+                    ]
+                )
+            ]
 
         else:  # now we just randomly rewire
 
             # randomly pick one of x's tails (excluding "x")
-            x_tails = adj_matx[node_x, :, ].nonzero()[0]
+            x_tails = adj_matx[
+                node_x,
+                :,
+            ].nonzero()[0]
             x_cut_tail = np.random.choice(x_tails)
 
             # randomly pick one of x's non-tails (excluding "x")
@@ -433,23 +533,44 @@ def run_in_dynamics(
         # Warning if exception
         if x_cut_tail == x_wire_non_tail:
             print("PROBLEM")
-            print("The A nodes rewired are %d and %d with weight %f"
-                  % (x_wire_non_tail, node_x, adj_matx[node_x, x_cut_tail],)
-                  )
-            print("The A nodes disconnected are %d and %d" % (x_cut_tail, node_x,))
+            print(
+                "The A nodes rewired are %d and %d with weight %f"
+                % (
+                    x_wire_non_tail,
+                    node_x,
+                    adj_matx[node_x, x_cut_tail],
+                )
+            )
+            print(
+                "The A nodes disconnected are %d and %d"
+                % (
+                    x_cut_tail,
+                    node_x,
+                )
+            )
 
         # if rewired by network consensus: the chosen node's edge to its coldest target is
         # switched towards its hottest non target (non-tail or tail)
         # if randomly rewired: one of the chosen node's target is picked randomly and
         # replaced with a non target picked randomly
-        adj_matx[node_x, x_wire_non_tail, ] = adj_matx[node_x, x_cut_tail, ]
-        adj_matx[node_x, x_cut_tail, ] = 0
+        adj_matx[node_x, x_wire_non_tail,] = adj_matx[
+            node_x,
+            x_cut_tail,
+        ]
+        adj_matx[
+            node_x,
+            x_cut_tail,
+        ] = 0
 
     return adj_matx
 
 
 def run_in_and_out_dynamics(
-    AInit, p_rnd_rewire, n_rewirings, tau, flag_alg,
+    AInit,
+    p_rnd_rewire,
+    n_rewirings,
+    tau,
+    flag_alg,
 ):
     """
     Rewires iteratively a matrix A. At each iteration the rewiring can be random
@@ -480,71 +601,132 @@ def run_in_and_out_dynamics(
 
         # pick a node at random
         (not_x, node_x,) = pick_node_with_in_out_edges(
-            adj_matx, tau, p_rnd_rewire,
+            adj_matx,
+            tau,
+            p_rnd_rewire,
         )
 
         # find the nodes with no incomings from "x"
-        x_non_head_bool = 1.0 * np.logical_not(adj_matx[not_x, node_x, ])
+        x_non_head_bool = 1.0 * np.logical_not(
+            adj_matx[
+                not_x,
+                node_x,
+            ]
+        )
 
         # Identify nodes that do not send an edge to "x
-        x_non_tail_bool = 1.0 * np.logical_not(adj_matx[node_x, not_x, ])
+        x_non_tail_bool = 1.0 * np.logical_not(
+            adj_matx[
+                node_x,
+                not_x,
+            ]
+        )
 
         if np.random.random_sample() >= p_rnd_rewire:  # rewire by network diffusion
 
             # calculate the consensus or advection kernel
-            if flag_alg == 'consensus':
+            if flag_alg == "consensus":
                 kernel = compute_consensus_kernel(adj_matx, tau)
-            elif flag_alg == 'advection':
+            elif flag_alg == "advection":
                 kernel = compute_advection_kernel(adj_matx, tau)
 
             # ====== REWIRING FOR THE INCOMING EDGES OF THE NODE X ====
 
-             # get node x's coldest tail (excluding "x")
-            x_tails = adj_matx[node_x, :, ].nonzero()[0]
-            x_cut_tail = x_tails[np.argmin(kernel[node_x, x_tails, ])]
+            # get node x's coldest tail (excluding "x")
+            x_tails = adj_matx[
+                node_x,
+                :,
+            ].nonzero()[0]
+            x_cut_tail = x_tails[
+                np.argmin(
+                    kernel[
+                        node_x,
+                        x_tails,
+                    ]
+                )
+            ]
 
             # get node x's hottest non-tail (excluding "x")
             x_non_tails = not_x[x_non_tail_bool.nonzero()[0]]
-            x_wire_non_tail = x_non_tails[np.argmax(kernel[node_x, x_non_tails, ])]
+            x_wire_non_tail = x_non_tails[
+                np.argmax(
+                    kernel[
+                        node_x,
+                        x_non_tails,
+                    ]
+                )
+            ]
 
             # ====== REWIRING FOR THE OUTGOING EDGES OF THE NODE X ====
 
             # get node x's coldest head (excluding "x")
             x_heads = adj_matx[:, node_x].nonzero()[0]
-            x_cut_head = x_heads[np.argmin(kernel[x_heads, node_x, ])]
+            x_cut_head = x_heads[
+                np.argmin(
+                    kernel[
+                        x_heads,
+                        node_x,
+                    ]
+                )
+            ]
 
             # Get x's hottest non-head (excluding "x")
             x_non_heads = not_x[x_non_head_bool.nonzero()[0]]
-            x_wire_non_head = x_non_heads[np.argmax(kernel[x_non_heads, node_x, ])]
+            x_wire_non_head = x_non_heads[
+                np.argmax(
+                    kernel[
+                        x_non_heads,
+                        node_x,
+                    ]
+                )
+            ]
 
         else:  # or randomly rewire
 
             ####################################
             # randomly pick one of x's tails (excluding "x")
-            x_tails = adj_matx[node_x, :, ].nonzero()[0]
+            x_tails = adj_matx[
+                node_x,
+                :,
+            ].nonzero()[0]
             x_cut_tail = np.random.choice(x_tails)
 
             # randomly pick one of x's non-tails (excluding "x")
             x_wire_non_tail = not_x[np.random.choice(x_non_tail_bool.nonzero()[0])]
 
-           ##################################
+            ##################################
             # randomly pick one of x's head (excluding "x")
-            x_heads = adj_matx[:, node_x, ].nonzero()[0]
+            x_heads = adj_matx[
+                :,
+                node_x,
+            ].nonzero()[0]
             x_cut_head = np.random.choice(x_heads)
 
             x_wire_non_head = not_x[np.random.choice(x_non_head_bool.nonzero()[0])]
-            #print("x_wire_non_head is :"+str(x_wire_non_head))
+            # print("x_wire_non_head is :"+str(x_wire_non_head))
 
         if (x_cut_tail == x_wire_non_tail) | (x_cut_head == x_wire_non_head):
-            print('PROBLEM')
+            print("PROBLEM")
 
         ##################################################################
         # Rewiring
-        adj_matx[node_x, x_wire_non_tail, ] = adj_matx[node_x, x_cut_tail, ]
-        adj_matx[x_wire_non_head, node_x, ] = adj_matx[x_cut_head, node_x, ]
+        adj_matx[node_x, x_wire_non_tail,] = adj_matx[
+            node_x,
+            x_cut_tail,
+        ]
+        adj_matx[x_wire_non_head, node_x,] = adj_matx[
+            x_cut_head,
+            node_x,
+        ]
 
-        adj_matx[node_x, x_cut_tail, ] = 0
-        adj_matx[x_cut_head, node_x, ] = 0
+        adj_matx[
+            node_x,
+            x_cut_tail,
+        ] = 0
+        adj_matx[
+            x_cut_head,
+            node_x,
+        ] = 0
         ##################################################################
 
     return adj_matx
@@ -552,7 +734,9 @@ def run_in_and_out_dynamics(
 
 # either run advection or consensus at each iteration
 def run_dynamics_advection_consensus_sequence(
-    AInit, n_rewirings, tau,
+    AInit,
+    n_rewirings,
+    tau,
 ):
 
     adj_matx = AInit.copy()
@@ -563,36 +747,71 @@ def run_dynamics_advection_consensus_sequence(
 
         # pick a node at random
         (not_x, node_x,) = pick_node_with_in_out_edges(
-            adj_matx, tau, p_rnd_rewire,
+            adj_matx,
+            tau,
+            p_rnd_rewire,
         )
 
         # take the actual vector and make inversions 0->1 and 1->0
         # find the nodes with no incomings from "x"
-        x_non_head_bool = 1.0 * np.logical_not(adj_matx[not_x, node_x, ])
+        x_non_head_bool = 1.0 * np.logical_not(
+            adj_matx[
+                not_x,
+                node_x,
+            ]
+        )
 
         # Identify nodes that do not send an edge to "x
-        x_non_tail_bool = 1.0 * np.logical_not(adj_matx[node_x, not_x, ])
+        x_non_tail_bool = 1.0 * np.logical_not(
+            adj_matx[
+                node_x,
+                not_x,
+            ]
+        )
 
         if (iter_i % 2) == 0:
-            print('Even iteration, we do consensus')
+            print("Even iteration, we do consensus")
 
             # ====== REWIRING FOR THE in-DEGREE OF THE NODE X ====
             kernel = compute_consensus_kernel(adj_matx, tau)
 
             # get node x's coldest tail (excluding "x")
-            x_tails = adj_matx[node_x, :, ].nonzero()[0]
-            x_cut_tail = x_tails[np.argmin(kernel[node_x, x_tails, ])]
+            x_tails = adj_matx[
+                node_x,
+                :,
+            ].nonzero()[0]
+            x_cut_tail = x_tails[
+                np.argmin(
+                    kernel[
+                        node_x,
+                        x_tails,
+                    ]
+                )
+            ]
 
             # get node x's hottest non-tail (excluding "x")
             x_non_tails = not_x[x_non_tail_bool.nonzero()[0]]
-            x_wire_non_tail = x_non_tails[np.argmax(kernel[node_x, x_non_tails, ])]
+            x_wire_non_tail = x_non_tails[
+                np.argmax(
+                    kernel[
+                        node_x,
+                        x_non_tails,
+                    ]
+                )
+            ]
 
             # cut and rewire in-going connections from node x
-            adj_matx[node_x, x_wire_non_tail, ] = adj_matx[node_x, x_cut_tail, ]
-            adj_matx[node_x, x_cut_tail, ] = 0
+            adj_matx[node_x, x_wire_non_tail,] = adj_matx[
+                node_x,
+                x_cut_tail,
+            ]
+            adj_matx[
+                node_x,
+                x_cut_tail,
+            ] = 0
 
         else:
-            print('Odd iteration, we do advection')
+            print("Odd iteration, we do advection")
 
             # ====== REWIRING FOR THE out-DEGREE OF NODE X =====
 
@@ -600,21 +819,43 @@ def run_dynamics_advection_consensus_sequence(
 
             # get node x's coldest head (excluding "x")
             x_heads = adj_matx[:, node_x].nonzero()[0]
-            x_cut_head = x_heads[np.argmin(kernel[x_heads, node_x, ])]
+            x_cut_head = x_heads[
+                np.argmin(
+                    kernel[
+                        x_heads,
+                        node_x,
+                    ]
+                )
+            ]
 
             # Get x's hottest non-head (excluding "x")
             x_non_heads = not_x[x_non_head_bool.nonzero()[0]]
-            x_wire_non_head = x_non_heads[np.argmax(kernel[x_non_heads, node_x, ])]
+            x_wire_non_head = x_non_heads[
+                np.argmax(
+                    kernel[
+                        x_non_heads,
+                        node_x,
+                    ]
+                )
+            ]
 
             # cut and rewire out-going connections from node x
-            adj_matx[x_wire_non_head, node_x, ] = adj_matx[x_cut_head, node_x, ]
-            adj_matx[x_cut_head, node_x, ] = 0
+            adj_matx[x_wire_non_head, node_x,] = adj_matx[
+                x_cut_head,
+                node_x,
+            ]
+            adj_matx[
+                x_cut_head,
+                node_x,
+            ] = 0
 
     return adj_matx
 
 
 def run_dynamics_advection_consensus_parallel(
-    AInit, n_rewirings, tau,
+    AInit,
+    n_rewirings,
+    tau,
 ):
 
     adj_matx = AInit.copy()
@@ -625,26 +866,55 @@ def run_dynamics_advection_consensus_parallel(
 
         # pick a node at random
         (not_x, node_x,) = pick_node_with_in_out_edges(
-            adj_matx, tau, p_rnd_rewire,
+            adj_matx,
+            tau,
+            p_rnd_rewire,
         )
 
         # take the actual vector and make inversions 0->1 and 1->0
         # find the nodes with no incomings from "x"
-        x_non_head_bool = 1.0 * np.logical_not(adj_matx[not_x, node_x, ])
+        x_non_head_bool = 1.0 * np.logical_not(
+            adj_matx[
+                not_x,
+                node_x,
+            ]
+        )
 
         # Identify nodes that do not send an edge to "x
-        x_non_tail_bool = 1.0 * np.logical_not(adj_matx[node_x, not_x, ])
+        x_non_tail_bool = 1.0 * np.logical_not(
+            adj_matx[
+                node_x,
+                not_x,
+            ]
+        )
 
         # ====== REWIRING FOR THE in-DEGREE OF THE NODE X ====
         kernel = compute_consensus_kernel(adj_matx, tau)
 
         # get node x's coldest tail (excluding "x")
-        x_tails = adj_matx[node_x, :, ].nonzero()[0]
-        x_cut_tail = x_tails[np.argmin(kernel[node_x, x_tails, ])]
+        x_tails = adj_matx[
+            node_x,
+            :,
+        ].nonzero()[0]
+        x_cut_tail = x_tails[
+            np.argmin(
+                kernel[
+                    node_x,
+                    x_tails,
+                ]
+            )
+        ]
 
         # get node x's hottest non-tail (excluding "x")
         x_non_tails = not_x[x_non_tail_bool.nonzero()[0]]
-        x_wire_non_tail = x_non_tails[np.argmax(kernel[node_x, x_non_tails, ])]
+        x_wire_non_tail = x_non_tails[
+            np.argmax(
+                kernel[
+                    node_x,
+                    x_non_tails,
+                ]
+            )
+        ]
 
         # ====== REWIRING FOR THE out-DEGREE OF NODE X =====
 
@@ -652,28 +922,58 @@ def run_dynamics_advection_consensus_parallel(
 
         # get node x's coldest head (excluding "x")
         x_heads = adj_matx[:, node_x].nonzero()[0]
-        x_cut_head = x_heads[np.argmin(kernel[x_heads, node_x, ])]
+        x_cut_head = x_heads[
+            np.argmin(
+                kernel[
+                    x_heads,
+                    node_x,
+                ]
+            )
+        ]
 
         # Get x's hottest non-head (excluding "x")
         x_non_heads = not_x[x_non_head_bool.nonzero()[0]]
-        x_wire_non_head = x_non_heads[np.argmax(kernel[x_non_heads, node_x, ])]
+        x_wire_non_head = x_non_heads[
+            np.argmax(
+                kernel[
+                    x_non_heads,
+                    node_x,
+                ]
+            )
+        ]
 
         ############################
         # cut and rewire in-going connections from node x
-        adj_matx[node_x, x_wire_non_tail, ] = adj_matx[node_x, x_cut_tail, ]
-        adj_matx[node_x, x_cut_tail, ] = 0
+        adj_matx[node_x, x_wire_non_tail,] = adj_matx[
+            node_x,
+            x_cut_tail,
+        ]
+        adj_matx[
+            node_x,
+            x_cut_tail,
+        ] = 0
 
         # cut and rewire out-going connections from node x
-        adj_matx[x_wire_non_head, node_x, ] = adj_matx[x_cut_head, node_x, ]
-        adj_matx[x_cut_head, node_x, ] = 0
+        adj_matx[x_wire_non_head, node_x,] = adj_matx[
+            x_cut_head,
+            node_x,
+        ]
+        adj_matx[
+            x_cut_head,
+            node_x,
+        ] = 0
 
     return adj_matx
 
 
 # either run advection or consensus depending on p_adv. For example if p_adv = 0.7, every time there is a 70% probability that advection will take place, and a 30% that consensus will take place
 
+
 def run_dynamics_advection_consensus(
-    AInit, n_rewirings, tau, p_adv,
+    AInit,
+    n_rewirings,
+    tau,
+    p_adv,
 ):
 
     adj_matx = AInit.copy()
@@ -684,36 +984,71 @@ def run_dynamics_advection_consensus(
 
         # pick a node at random
         (not_x, node_x,) = pick_node_with_in_out_edges(
-            adj_matx, tau, p_rnd_rewire,
+            adj_matx,
+            tau,
+            p_rnd_rewire,
         )
 
         # take the actual vector and make inversions 0->1 and 1->0
         # find the nodes with no incomings from "x"
-        x_non_head_bool = 1.0 * np.logical_not(adj_matx[not_x, node_x, ])
+        x_non_head_bool = 1.0 * np.logical_not(
+            adj_matx[
+                not_x,
+                node_x,
+            ]
+        )
 
         # Identify nodes that do not send an edge to "x
-        x_non_tail_bool = 1.0 * np.logical_not(adj_matx[node_x, not_x, ])
+        x_non_tail_bool = 1.0 * np.logical_not(
+            adj_matx[
+                node_x,
+                not_x,
+            ]
+        )
 
         if np.random.random_sample() >= p_adv:
-            #print('we do consensus')
+            # print('we do consensus')
 
             # ====== REWIRING FOR THE in-DEGREE OF THE NODE X ====
             kernel = compute_consensus_kernel(adj_matx, tau)
 
             # get node x's coldest tail (excluding "x")
-            x_tails = adj_matx[node_x, :, ].nonzero()[0]
-            x_cut_tail = x_tails[np.argmin(kernel[node_x, x_tails, ])]
+            x_tails = adj_matx[
+                node_x,
+                :,
+            ].nonzero()[0]
+            x_cut_tail = x_tails[
+                np.argmin(
+                    kernel[
+                        node_x,
+                        x_tails,
+                    ]
+                )
+            ]
 
             # get node x's hottest non-tail (excluding "x")
             x_non_tails = not_x[x_non_tail_bool.nonzero()[0]]
-            x_wire_non_tail = x_non_tails[np.argmax(kernel[node_x, x_non_tails, ])]
+            x_wire_non_tail = x_non_tails[
+                np.argmax(
+                    kernel[
+                        node_x,
+                        x_non_tails,
+                    ]
+                )
+            ]
 
             # cut and rewire in-going connections from node x
-            adj_matx[node_x, x_wire_non_tail, ] = adj_matx[node_x, x_cut_tail, ]
-            adj_matx[node_x, x_cut_tail, ] = 0
+            adj_matx[node_x, x_wire_non_tail,] = adj_matx[
+                node_x,
+                x_cut_tail,
+            ]
+            adj_matx[
+                node_x,
+                x_cut_tail,
+            ] = 0
 
         else:
-            #print('we do advection')
+            # print('we do advection')
 
             # ====== REWIRING FOR THE out-DEGREE OF NODE X =====
 
@@ -721,21 +1056,45 @@ def run_dynamics_advection_consensus(
 
             # get node x's coldest head (excluding "x")
             x_heads = adj_matx[:, node_x].nonzero()[0]
-            x_cut_head = x_heads[np.argmin(kernel[x_heads, node_x, ])]
+            x_cut_head = x_heads[
+                np.argmin(
+                    kernel[
+                        x_heads,
+                        node_x,
+                    ]
+                )
+            ]
 
             # Get x's hottest non-head (excluding "x")
             x_non_heads = not_x[x_non_head_bool.nonzero()[0]]
-            x_wire_non_head = x_non_heads[np.argmax(kernel[x_non_heads, node_x, ])]
+            x_wire_non_head = x_non_heads[
+                np.argmax(
+                    kernel[
+                        x_non_heads,
+                        node_x,
+                    ]
+                )
+            ]
 
             # cut and rewire out-going connections from node x
-            adj_matx[x_wire_non_head, node_x, ] = adj_matx[x_cut_head, node_x, ]
-            adj_matx[x_cut_head, node_x, ] = 0
+            adj_matx[x_wire_non_head, node_x,] = adj_matx[
+                x_cut_head,
+                node_x,
+            ]
+            adj_matx[
+                x_cut_head,
+                node_x,
+            ] = 0
 
     return adj_matx
 
 
 def run_dynamics_advection_consensus_with_random_rewire(
-    AInit, n_rewirings, tau, p_adv, p_rnd_rewire,
+    AInit,
+    n_rewirings,
+    tau,
+    p_adv,
+    p_rnd_rewire,
 ):
 
     adj_matx = AInit.copy()
@@ -745,37 +1104,72 @@ def run_dynamics_advection_consensus_with_random_rewire(
 
         # pick a node at random
         (not_x, node_x,) = pick_node_with_in_out_edges(
-            adj_matx, tau, p_rnd_rewire,
+            adj_matx,
+            tau,
+            p_rnd_rewire,
         )
 
         # take the actual vector and make inversions 0->1 and 1->0
         # find the nodes with no incomings from "x"
-        x_non_head_bool = 1.0 * np.logical_not(adj_matx[not_x, node_x, ])
+        x_non_head_bool = 1.0 * np.logical_not(
+            adj_matx[
+                not_x,
+                node_x,
+            ]
+        )
 
         # Identify nodes that do not send an edge to "x
-        x_non_tail_bool = 1.0 * np.logical_not(adj_matx[node_x, not_x, ])
+        x_non_tail_bool = 1.0 * np.logical_not(
+            adj_matx[
+                node_x,
+                not_x,
+            ]
+        )
 
         if np.random.random_sample() >= p_rnd_rewire:
             if np.random.random_sample() >= p_adv:
-                #print('we do consensus')
+                # print('we do consensus')
 
                 # ====== REWIRING FOR THE in-DEGREE OF THE NODE X ====
                 kernel = compute_consensus_kernel(adj_matx, tau)
 
                 # get node x's coldest tail (excluding "x")
-                x_tails = adj_matx[node_x, :, ].nonzero()[0]
-                x_cut_tail = x_tails[np.argmin(kernel[node_x, x_tails, ])]
+                x_tails = adj_matx[
+                    node_x,
+                    :,
+                ].nonzero()[0]
+                x_cut_tail = x_tails[
+                    np.argmin(
+                        kernel[
+                            node_x,
+                            x_tails,
+                        ]
+                    )
+                ]
 
                 # get node x's hottest non-tail (excluding "x")
                 x_non_tails = not_x[x_non_tail_bool.nonzero()[0]]
-                x_wire_non_tail = x_non_tails[np.argmax(kernel[node_x, x_non_tails, ])]
+                x_wire_non_tail = x_non_tails[
+                    np.argmax(
+                        kernel[
+                            node_x,
+                            x_non_tails,
+                        ]
+                    )
+                ]
 
                 # cut and rewire in-going connections from node x
-                adj_matx[node_x, x_wire_non_tail, ] = adj_matx[node_x, x_cut_tail, ]
-                adj_matx[node_x, x_cut_tail, ] = 0
+                adj_matx[node_x, x_wire_non_tail,] = adj_matx[
+                    node_x,
+                    x_cut_tail,
+                ]
+                adj_matx[
+                    node_x,
+                    x_cut_tail,
+                ] = 0
 
             else:
-                #print('we do advection')
+                # print('we do advection')
 
                 # ====== REWIRING FOR THE out-DEGREE OF NODE X =====
 
@@ -783,44 +1177,82 @@ def run_dynamics_advection_consensus_with_random_rewire(
 
                 # get node x's coldest head (excluding "x")
                 x_heads = adj_matx[:, node_x].nonzero()[0]
-                x_cut_head = x_heads[np.argmin(kernel[x_heads, node_x, ])]
+                x_cut_head = x_heads[
+                    np.argmin(
+                        kernel[
+                            x_heads,
+                            node_x,
+                        ]
+                    )
+                ]
 
                 # Get x's hottest non-head (excluding "x")
                 x_non_heads = not_x[x_non_head_bool.nonzero()[0]]
-                x_wire_non_head = x_non_heads[np.argmax(kernel[x_non_heads, node_x, ])]
+                x_wire_non_head = x_non_heads[
+                    np.argmax(
+                        kernel[
+                            x_non_heads,
+                            node_x,
+                        ]
+                    )
+                ]
 
                 # cut and rewire out-going connections from node x
-                adj_matx[x_wire_non_head, node_x, ] = adj_matx[x_cut_head, node_x, ]
-                adj_matx[x_cut_head, node_x, ] = 0
+                adj_matx[x_wire_non_head, node_x,] = adj_matx[
+                    x_cut_head,
+                    node_x,
+                ]
+                adj_matx[
+                    x_cut_head,
+                    node_x,
+                ] = 0
 
         else:  # or randomly rewire
 
             ####################################
             # randomly pick one of x's tails (excluding "x")
-            x_tails = adj_matx[node_x, :, ].nonzero()[0]
+            x_tails = adj_matx[
+                node_x,
+                :,
+            ].nonzero()[0]
             x_cut_tail = np.random.choice(x_tails)
 
             # randomly pick one of x's non-tails (excluding "x")
             x_wire_non_tail = not_x[np.random.choice(x_non_tail_bool.nonzero()[0])]
 
-           ##################################
+            ##################################
             # randomly pick one of x's head (excluding "x")
-            x_heads = adj_matx[:, node_x, ].nonzero()[0]
+            x_heads = adj_matx[
+                :,
+                node_x,
+            ].nonzero()[0]
             x_cut_head = np.random.choice(x_heads)
 
             x_wire_non_head = not_x[np.random.choice(x_non_head_bool.nonzero()[0])]
-            #print("x_wire_non_head is :"+str(x_wire_non_head))
+            # print("x_wire_non_head is :"+str(x_wire_non_head))
 
             if (x_cut_tail == x_wire_non_tail) | (x_cut_head == x_wire_non_head):
-                print('PROBLEM')
+                print("PROBLEM")
 
             ##################################################################
             # Rewiring
-            adj_matx[node_x, x_wire_non_tail, ] = adj_matx[node_x, x_cut_tail, ]
-            adj_matx[x_wire_non_head, node_x, ] = adj_matx[x_cut_head, node_x, ]
+            adj_matx[node_x, x_wire_non_tail,] = adj_matx[
+                node_x,
+                x_cut_tail,
+            ]
+            adj_matx[x_wire_non_head, node_x,] = adj_matx[
+                x_cut_head,
+                node_x,
+            ]
 
-            adj_matx[node_x, x_cut_tail, ] = 0
-            adj_matx[x_cut_head, node_x, ] = 0
+            adj_matx[
+                node_x,
+                x_cut_tail,
+            ] = 0
+            adj_matx[
+                x_cut_head,
+                node_x,
+            ] = 0
             ##################################################################
 
     return adj_matx

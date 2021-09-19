@@ -1,15 +1,16 @@
 import numpy as np
-from codebase import utils
-from codebase import rewiring
-from scipy import linalg
-from matplotlib import pyplot as plt
-import pandas as pd
-from codebase import utils
-from ipdb import set_trace as st
+from src.codebase.nodes import rewiring
 
 
 def run_dynamics_steps(
-    n_nodes, edges, p_rnd_rewire, tau, n_rewirings_vec, flag_rewire_method, flag_alg, **kwargs
+    n_nodes,
+    edges,
+    p_rnd_rewire,
+    tau,
+    n_rewirings_vec,
+    flag_rewire_method,
+    flag_alg,
+    **kwargs
 ):
     """
     Rewires iteratively an adjacency matrix and stores the rewired adjacency matrices at the dictionary A.
@@ -37,7 +38,7 @@ def run_dynamics_steps(
     AInit = rewiring.generate_rand_Adj(n_nodes, edges, **kwargs)
     A = {}
     A[0] = AInit
-    #n_rewirings_vec =  np.insert(n_rewirings_vec, 0, 0, axis=0)
+    # n_rewirings_vec =  np.insert(n_rewirings_vec, 0, 0, axis=0)
 
     for ind, n_rewirings in enumerate(n_rewirings_vec):
 
@@ -48,19 +49,31 @@ def run_dynamics_steps(
             subtract = n_rewirings_vec[ind - 1]
 
         rewirings = n_rewirings - subtract
-        if flag_rewire_method == 'in_out':
+        if flag_rewire_method == "in_out":
             A[n_rewirings] = rewiring.run_in_and_out_dynamics(
-                AInit, p_rnd_rewire, rewirings, tau, flag_alg,
+                AInit,
+                p_rnd_rewire,
+                rewirings,
+                tau,
+                flag_alg,
             )
-        elif flag_rewire_method == 'in':
+        elif flag_rewire_method == "in":
 
             A[n_rewirings] = rewiring.run_in_dynamics(
-                AInit, p_rnd_rewire, rewirings, tau, flag_alg,
+                AInit,
+                p_rnd_rewire,
+                rewirings,
+                tau,
+                flag_alg,
             )
-        elif flag_rewire_method == 'out':
+        elif flag_rewire_method == "out":
 
             A[n_rewirings] = rewiring.run_out_dynamics(
-                AInit, p_rnd_rewire, rewirings, tau, flag_alg,
+                AInit,
+                p_rnd_rewire,
+                rewirings,
+                tau,
+                flag_alg,
             )
 
         # initialize for the next iteration
@@ -70,7 +83,14 @@ def run_dynamics_steps(
 
 
 def run_dynamics_diff_values(
-    n_nodes, edges, p_rnd_rewire_vec, tau_vec, n_rewirings_vec, flag_rewire_method, flag_alg, **kwargs
+    n_nodes,
+    edges,
+    p_rnd_rewire_vec,
+    tau_vec,
+    n_rewirings_vec,
+    flag_rewire_method,
+    flag_alg,
+    **kwargs
 ):
     """
     Same as run_dynamics_steps but stores in dictionary for different tau and p_random values
@@ -100,13 +120,30 @@ def run_dynamics_diff_values(
     for p in p_rnd_rewire_vec:
         for tau in tau_vec:
 
-            A[(p, tau)] = run_dynamics_steps(n_nodes, edges, p, tau, n_rewirings_vec, flag_rewire_method, flag_alg, **kwargs)
+            A[(p, tau)] = run_dynamics_steps(
+                n_nodes,
+                edges,
+                p,
+                tau,
+                n_rewirings_vec,
+                flag_rewire_method,
+                flag_alg,
+                **kwargs
+            )
 
     return A
 
 
 def run_dynamics_iterations(
-    n_nodes, edges, p_rnd_rewire_vec, tau_vec, n_rewirings_vec, flag_rewire_method, flag_alg, iterations, **kwargs
+    n_nodes,
+    edges,
+    p_rnd_rewire_vec,
+    tau_vec,
+    n_rewirings_vec,
+    flag_rewire_method,
+    flag_alg,
+    iterations,
+    **kwargs
 ):
     """
     Same as run_consensus_diff_values but for many iterations
@@ -137,7 +174,16 @@ def run_dynamics_iterations(
     """
     A_all = {}
     for it in np.arange(iterations):
-        print('we are at %d iteration ' % (it + 1))
-        A_all[it + 1] = run_dynamics_diff_values(n_nodes, edges, p_rnd_rewire_vec, tau_vec, n_rewirings_vec, flag_rewire_method, flag_alg, **kwargs)
+        print("we are at %d iteration " % (it + 1))
+        A_all[it + 1] = run_dynamics_diff_values(
+            n_nodes,
+            edges,
+            p_rnd_rewire_vec,
+            tau_vec,
+            n_rewirings_vec,
+            flag_rewire_method,
+            flag_alg,
+            **kwargs
+        )
 
     return A_all

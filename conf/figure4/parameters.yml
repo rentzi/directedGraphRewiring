@@ -1,0 +1,18 @@
+
+# general pipeline parameters
+min_con: 50
+max_con: 98 
+tau: 1
+p_adv: 0.5
+pRand: [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]
+repetitions: 100
+degSel: [30, 40, 50, 60]
+
+# parameters specific to figures
+figures:
+  min_con: 30
+  max_con: 70 
+  ms: 8
+  LW: 2
+  colorsPlot: ["orange", "green", "blue", "red", "cyan"]
+  shapePointNoLine: ["s", "v", "o", "d", "h"]

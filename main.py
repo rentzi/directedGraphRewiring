@@ -1,22 +1,23 @@
 import os
 import sys
 import yaml
-from src.codebase.pipelines import figure2, figure3
+from src.codebase.pipelines import figure2, figure3, figure4
 
 
 def check_run_args(run_args):
-    """Check that the run arguments are correct"""
+    """Check that run arguments passed to python -m main are correct"""
+    # check that arg 1 exists
     try:
         flag = run_args[1]
         if flag in ["--run", "--load"]:
             try:
                 pipeline_name = sys.argv[2]
             except:
-                SyntaxError("Pipeline name is missing")
+                SyntaxError("Specify pipeline name. It is missing.")
         else:
             print(
                 """ 
-                Define 
+                Specify pipeline with either: 
                 --run followed with a pipeline name 
                 --load followed with a pipeline name 
                 """
@@ -24,7 +25,7 @@ def check_run_args(run_args):
     except:
         SyntaxError(
             """ 
-                Define 
+                Specify pipeline with either:  
                 --run followed with a pipeline name 
                 --load followed with a pipeline name 
                 """
@@ -59,9 +60,6 @@ def run_pipeline(pipeline: str):
     output = pipe.create(params)
 
     # save intermediate data
-    from ipdb import set_trace
-
-    set_trace()
     pipe.save_data(output)
 
 
