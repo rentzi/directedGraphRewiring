@@ -123,11 +123,7 @@ def plot_figure(data: Dict[str, Any]):
     sns.boxplot(x="type", y="densities", hue="pRand", data=df)
     plt.show()
 
-    from ipdb import set_trace
-
-    set_trace()
-
-    # panel 4 [TODO]: debug
+    # panel 4
     nodes_figure6.plot_panel_3(df)
 
     # panel 5

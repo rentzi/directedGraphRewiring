@@ -253,7 +253,7 @@ def plot_panel_2(NUM_ITER, P_RAND_SAMPLE, DENSITY_TYPE, densityIntermed, density
             counter += 1
             start = (counter - 1) * NUM_ITER
             end = start + NUM_ITER
-            if den is "Simple":
+            if den == "Simple":
                 allDensities.extend(densitySimple[p])
                 labelsType.extend(["Simple"] * NUM_ITER)
             else:
