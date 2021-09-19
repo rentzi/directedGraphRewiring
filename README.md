@@ -1,6 +1,6 @@
-# Directed Graph rewiring
+# Directed Graph rewiring code
 
-author: Ilias Rentzeperis, Steeve Laquitaine, Cees van leeuwen
+Ilias Rentzeperis, Steeve Laquitaine
 
 
 ## Setup
