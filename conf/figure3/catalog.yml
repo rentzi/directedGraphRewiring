@@ -1,0 +1,13 @@
+
+# raw data path
+directory_load: "data/01_raw/"
+
+# data path for the result of the analyses that reproduce figure 3
+path_data: data/02_intermediate/pathMetrics/pathDict.pickle
+cycle_data: data/02_intermediate/pathMetrics/cycleDict.pickle
+P_R_AGGREGATE: data/02_intermediate/pathMetrics/P_R_AGGREGATE.pickle
+REP_AGGREGATE: data/02_intermediate/pathMetrics/REP_AGGREGATE.pickle
+
+# analysis flag
+flag: "_cons_adv_50_"
+

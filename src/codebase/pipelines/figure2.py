@@ -23,7 +23,7 @@ from src.codebase.nodes import rewiring_iterations
 plt.rcParams["figure.figsize"] = [20, 10]
 
 
-def plot_digraphs(data):
+def plot_figure(data):
     """Plot directed graphs for different rewiring schemes
 
     Args:
@@ -107,5 +107,5 @@ def create(
         outs[SCHEME[ix]] = out
 
     # plot graphs
-    plot_digraphs(outs)
+    plot_figure(outs)
     return outs

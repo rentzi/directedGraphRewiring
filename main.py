@@ -1,7 +1,7 @@
 import os
 import sys
 import yaml
-from src.codebase.pipelines import figure2
+from src.codebase.pipelines import figure2, figure3
 
 
 def check_run_args(run_args):
@@ -38,21 +38,44 @@ def write_project_config():
         yaml.dump({"project_path": proj_path}, file)
 
 
-def run_pipeline(pipeline: "figure2"):
+def run_pipeline(pipeline: str):
+    """Run a pipeline
 
-    # get parameters file
+    Args:
+        pipeline (str): [description]
+    """
+
+    # set parameter file
     params_file = f"conf/{pipeline}/parameters.yml"
 
-    # load parameters and run pipeline
+    # load parameters
     with open(params_file, "r") as file:
         params = yaml.safe_load(file)
-    output = figure2.create(params)
-    figure2.save_data(output)
+
+    # get pipeline
+    pipe = eval(pipeline)
+
+    # run pipeline
+    output = pipe.create(params)
+
+    # save intermediate data
+    from ipdb import set_trace
+
+    set_trace()
+    pipe.save_data(output)
 
 
-def load(pipeline="figure2"):
-    tmp = eval(pipeline).load_data()
-    eval(pipeline).plot_digraphs(tmp)
+def load(pipeline=str):
+    """Load a pipeline intermediate data and plot figure
+
+    Args:
+        pipeline (str, optional): e.g.,"figure2"
+    """
+    # load intermediate data
+    data = eval(pipeline).load_data()
+
+    # plot
+    eval(pipeline).plot_figure(data)
 
 
 if __name__ == "__main__":
@@ -64,7 +87,7 @@ if __name__ == "__main__":
     # check run arguments
     check_run_args(sys.argv)
 
-    # store in project's config file
+    # write project config.
     write_project_config()
 
     # run pipeline
