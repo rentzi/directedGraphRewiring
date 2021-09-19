@@ -1,12 +1,13 @@
 import os
 import sys
 import yaml
-from src.codebase.pipelines import figure2, figure3, figure4
+from src.codebase.pipelines import figure2, figure3, figure4, figure5
 
 
 def check_run_args(run_args):
     """Check that run arguments passed to python -m main are correct"""
-    # check that arg 1 exists
+
+    # check that argument 1 exists
     try:
         flag = run_args[1]
         if flag in ["--run", "--load"]:
@@ -40,7 +41,7 @@ def write_project_config():
 
 
 def run_pipeline(pipeline: str):
-    """Run a pipeline
+    """Run pipeline to create specified figure
 
     Args:
         pipeline (str): [description]
@@ -64,10 +65,10 @@ def run_pipeline(pipeline: str):
 
 
 def load(pipeline=str):
-    """Load a pipeline intermediate data and plot figure
+    """Load a pipeline's stored intermediate data for a quick plot
 
     Args:
-        pipeline (str, optional): e.g.,"figure2"
+        pipeline (str, optional): e.g., "figure2"
     """
     # load intermediate data
     data = eval(pipeline).load_data()
