@@ -4412,3 +4412,9 @@
 2021-09-20 20:01:18,074 - ave inverse path length is 0.48133838383838795 and number of possible paths 10000
 2021-09-20 20:01:18,074 - average path is 2.077540527779217
 2021-09-20 20:01:18,074 - The analysis took: 75.48031187057495
+2021-09-20 20:17:10,040 - Iteration for in-out-thresh 15 took: 155.19868874549866
+2021-09-20 20:19:35,623 - Iteration for in-out-thresh 20 took: 145.58134198188782
+2021-09-20 20:21:40,191 - Iteration for in-out-thresh 25 took: 124.56573581695557
+2021-09-20 20:23:56,447 - Iteration for in-out-thresh 30 took: 136.25358295440674
+2021-09-20 20:25:49,706 - Iteration for in-out-thresh 15 took: 594.2926778793335
+2021-09-20 20:26:27,305 - NumExpr defaulting to 8 threads.
