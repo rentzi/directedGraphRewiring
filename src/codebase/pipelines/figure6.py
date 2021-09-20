@@ -6,6 +6,13 @@ from typing import Dict, Any
 from matplotlib import pyplot as plt
 import pickle
 import seaborn as sns
+import time
+import logging
+
+# configure logs
+logging.basicConfig(
+    filename="./logs/log.txt", format="%(asctime)s - %(message)s", level=logging.INFO
+)
 
 # load project context
 with open("project_context.yml", "r") as file:
@@ -31,13 +38,19 @@ def create(params):
     Returns:
         Dict[str, Any]: intermediate analysis data to for quick reproduction of figure 6
     """
+    # get dataset flag
+    FLAG = CATALOG["flag"]
+
+    # load raw data
+    file_path_load = DIR_LOAD + "A" + FLAG + "pRand.pckl"
+    A = utils.load_var(file_path_load)
 
     # get parameters
-    FLAG = CATALOG["flag"]
+    IN_OUT_THRESH_LIST = params["inOutThresh"]
+
     P_RAND = params["pRand"]
     REP = params["repetitions"]
     pR = params["pR"]
-    IN_OUT_THRESH = params["inOutThresh"]
     NUM_NODES = params["numNodes"]
     MARKERS = params["MARKERS"]
     COLORS = params["COLORS"]
@@ -45,28 +58,38 @@ def create(params):
     P_RAND_SAMPLE = params["P_RAND_SAMPLE"]
     DENSITY_TYPE = params["densityType"]
 
-    # load raw data
-    file_path_load = DIR_LOAD + "A" + FLAG + "pRand.pckl"
-    A = utils.load_var(file_path_load)
+    # initialize data
+    data = dict()
 
-    # run analysis
-    nodesIntermed, densityIntermed, densitySimple = nodes_figure6.run_analysis(
-        FLAG, P_RAND, REP, pR, IN_OUT_THRESH, NUM_NODES, A
-    )
+    # run analysis for different in out thresholds
+    for IN_OUT_THRESH in IN_OUT_THRESH_LIST:
 
-    # organize data
-    data = {
-        "densityIntermed": densityIntermed,
-        "densitySimple": densitySimple,
-        "nodesIntermed": nodesIntermed,
-        "pR": pR,
-        "IN_OUT_THRESH": IN_OUT_THRESH,
-        "MARKERS": MARKERS,
-        "COLORS": COLORS,
-        "NUM_ITER": NUM_ITER,
-        "P_RAND_SAMPLE": P_RAND_SAMPLE,
-        "DENSITY_TYPE": DENSITY_TYPE,
-    }
+        # time
+        tic = time.time()
+
+        # run analysis
+        nodesIntermed, densityIntermed, densitySimple = nodes_figure6.run_analysis(
+            FLAG, P_RAND, REP, pR, IN_OUT_THRESH, NUM_NODES, A
+        )
+
+        # organize data
+        data[f"IN_OUT_THRESH {IN_OUT_THRESH}"] = {
+            "densityIntermed": densityIntermed,
+            "densitySimple": densitySimple,
+            "nodesIntermed": nodesIntermed,
+            "pR": pR,
+            "IN_OUT_THRESH": IN_OUT_THRESH,
+            "MARKERS": MARKERS,
+            "COLORS": COLORS,
+            "NUM_ITER": NUM_ITER,
+            "P_RAND_SAMPLE": P_RAND_SAMPLE,
+            "DENSITY_TYPE": DENSITY_TYPE,
+        }
+
+        # log duration
+        logging.info(
+            f"Iteration for in-out-thresh {IN_OUT_THRESH} took: {time.time()-tic}"
+        )
 
     # plot
     plot_figure(data)
@@ -97,34 +120,37 @@ def save_data(data: Dict[str, Any]):
 
 def plot_figure(data: Dict[str, Any]):
 
-    # get data and parameters
-    densityIntermed = data["densityIntermed"]
-    densitySimple = data["densitySimple"]
-    nodesIntermed = data["nodesIntermed"]
-    pR = data["pR"]
-    IN_OUT_THRESH = data["IN_OUT_THRESH"]
-    MARKERS = data["MARKERS"]
-    COLORS = data["COLORS"]
-    NUM_ITER = data["NUM_ITER"]
-    P_RAND_SAMPLE = data["P_RAND_SAMPLE"]
-    DENSITY_TYPE = data["DENSITY_TYPE"]
+    # loop over in out threshold parameter in plot
+    for thresh in data:
 
-    # panel 1
-    nodes_figure6.plot_panel_1(
-        pR, IN_OUT_THRESH, MARKERS, COLORS, densityIntermed, densitySimple
-    )
+        # get data and parameters
+        densityIntermed = data[thresh]["densityIntermed"]
+        densitySimple = data[thresh]["densitySimple"]
+        nodesIntermed = data[thresh]["nodesIntermed"]
+        pR = data[thresh]["pR"]
+        IN_OUT_THRESH = data[thresh]["IN_OUT_THRESH"]
+        MARKERS = data[thresh]["MARKERS"]
+        COLORS = data[thresh]["COLORS"]
+        NUM_ITER = data[thresh]["NUM_ITER"]
+        P_RAND_SAMPLE = data[thresh]["P_RAND_SAMPLE"]
+        DENSITY_TYPE = data[thresh]["DENSITY_TYPE"]
 
-    # panel 2
-    df = nodes_figure6.plot_panel_2(
-        NUM_ITER, P_RAND_SAMPLE, DENSITY_TYPE, densityIntermed, densitySimple
-    )
+        # panel 1
+        nodes_figure6.plot_panel_1(
+            pR, IN_OUT_THRESH, MARKERS, COLORS, densityIntermed, densitySimple
+        )
 
-    # panel 3
-    sns.boxplot(x="type", y="densities", hue="pRand", data=df)
-    plt.show()
+        # panel 2
+        df = nodes_figure6.plot_panel_2(
+            NUM_ITER, P_RAND_SAMPLE, DENSITY_TYPE, densityIntermed, densitySimple
+        )
 
-    # panel 4
-    nodes_figure6.plot_panel_3(df)
+        # panel 3
+        sns.boxplot(x="type", y="densities", hue="pRand", data=df)
+        plt.show()
 
-    # panel 5
-    nodes_figure6.plot_panel_4(pR, IN_OUT_THRESH, nodesIntermed)
+        # panel 4
+        nodes_figure6.plot_panel_3(df)
+
+        # panel 5
+        nodes_figure6.plot_panel_4(pR, IN_OUT_THRESH, nodesIntermed)

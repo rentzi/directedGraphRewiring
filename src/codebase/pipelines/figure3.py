@@ -89,7 +89,7 @@ def save_data(data: Dict[str, Any]):
     REP_AGGREGATE = data["REP_AGGREGATE"]
 
     # set write paths
-    directory_save = "data/02_intermediate/pathMetrics/"
+    directory_save = "data/02_intermediate/figure3/pathMetrics/"
     path_file_path = directory_save + "pathDict.pickle"
     cycle_file_path = directory_save + "cycleDict.pickle"
     P_R_AGGREGATE_file_path = directory_save + "P_R_AGGREGATE.pickle"

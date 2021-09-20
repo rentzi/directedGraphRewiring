@@ -5,6 +5,13 @@ import yaml
 from typing import Dict, Any
 from matplotlib import pyplot as plt
 import pickle
+import time
+import logging
+
+# configure logs
+logging.basicConfig(
+    filename="./logs/log.txt", format="%(asctime)s - %(message)s", level=logging.INFO
+)
 
 # load project context
 with open("project_context.yml", "r") as file:
@@ -31,40 +38,55 @@ def create(params) -> Dict[str, Any]:
         Dict[str, Any]: intermediate analysis data to for quick reproduction of figure 5
     """
 
-    # get parameters
-    P_RAND = params["pRand"]
-    REP = params["repetitions"]
-    IN_OUT_THRESH = params["inOutThresh"]
-    P_R = params["pR"]
+    # get dataset flag
     FLAG = "_cons_adv_50_"
 
     # load raw data
     file_path_load = DIR_LOAD + "A" + FLAG + "pRand.pckl"
     A = utils.load_var(file_path_load)
 
-    # run analysis
-    (
-        inOutDict,
-        numConnectOut,
-        numNoConnectOut,
-        numConnectIn,
-        numNoConnectIn,
-        nodesAverage,
-    ) = nodes_figure5.run_analysis(P_RAND, REP, IN_OUT_THRESH, P_R, FLAG, A)
+    # get parameters
+    IN_OUT_THRESH_LIST = params["inOutThresh"]
+    P_RAND = params["pRand"]
+    REP = params["repetitions"]
+    P_R = params["pR"]
 
-    # organize data
-    data = {
-        "numConnectOut": numConnectOut,
-        "numNoConnectOut": numNoConnectOut,
-        "numConnectIn": numConnectIn,
-        "numNoConnectIn": numNoConnectIn,
-        "nodesAverage": nodesAverage,
-        "inOutDict": inOutDict,
-        "IN_OUT_THRESH": IN_OUT_THRESH,
-        "P_R": P_R,
-        "FLAG": FLAG,
-        "REP": REP,
-    }
+    # initialize data
+    data = dict()
+
+    # run analysis for different in out thresholds
+    for IN_OUT_THRESH in IN_OUT_THRESH_LIST:
+
+        # time
+        tic = time.time()
+
+        (
+            inOutDict,
+            numConnectOut,
+            numNoConnectOut,
+            numConnectIn,
+            numNoConnectIn,
+            nodesAverage,
+        ) = nodes_figure5.run_analysis(P_RAND, REP, IN_OUT_THRESH, P_R, FLAG, A)
+
+        # organize data
+        data[f"IN_OUT_THRESH {IN_OUT_THRESH}"] = {
+            "numConnectOut": numConnectOut,
+            "numNoConnectOut": numNoConnectOut,
+            "numConnectIn": numConnectIn,
+            "numNoConnectIn": numNoConnectIn,
+            "nodesAverage": nodesAverage,
+            "inOutDict": inOutDict,
+            "IN_OUT_THRESH": IN_OUT_THRESH,
+            "P_R": P_R,
+            "FLAG": FLAG,
+            "REP": REP,
+        }
+
+        # log duration
+        logging.info(
+            f"Iteration for in-out-thresh {IN_OUT_THRESH} took: {time.time()-tic}"
+        )
 
     # plot
     plot_figure(data)
@@ -95,22 +117,50 @@ def save_data(data: Dict[str, Any]):
 
 def plot_figure(data: Dict[str, Any]):
 
-    # get parameters
-    IN_OUT_THRESH = data["IN_OUT_THRESH"]
-    P_R = data["P_R"]
-    REP = data["REP"]
-    FLAG = data["FLAG"]
-    numConnectOut = data["numConnectOut"]
-    numNoConnectOut = data["numNoConnectOut"]
-    numConnectIn = data["numConnectIn"]
-    numNoConnectIn = data["numNoConnectIn"]
-    nodesAverage = data["nodesAverage"]
-    inOutDict = data["inOutDict"]
+    # loop over in out threshold parameter in plot
+    for thresh in data:
 
-    # plot panel 1
-    nodes_figure5.plot_panel_1(
-        IN_OUT_THRESH, P_R, numConnectOut, numNoConnectOut, numConnectIn, numNoConnectIn
-    )
+        # get parameters
+        IN_OUT_THRESH = data[thresh]["IN_OUT_THRESH"]
+        P_R = data[thresh]["P_R"]
+        numConnectOut = data[thresh]["numConnectOut"]
+        numNoConnectOut = data[thresh]["numNoConnectOut"]
+        numConnectIn = data[thresh]["numConnectIn"]
+        numNoConnectIn = data[thresh]["numNoConnectIn"]
+        nodesAverage = data[thresh]["nodesAverage"]
 
-    # plot panel 2
-    nodes_figure5.plot_panel_2(IN_OUT_THRESH, P_R, nodesAverage)
+        # plot panel 1
+        nodes_figure5.plot_panel_1(
+            IN_OUT_THRESH,
+            P_R,
+            numConnectOut,
+            numNoConnectOut,
+            numConnectIn,
+            numNoConnectIn,
+        )
+
+        # plot panel 2
+        nodes_figure5.plot_panel_2(IN_OUT_THRESH, P_R, nodesAverage)
+
+
+# def plot_figure(data: Dict[str, Any]):
+
+#     # get parameters
+#     IN_OUT_THRESH = data["IN_OUT_THRESH"]
+#     P_R = data["P_R"]
+#     REP = data["REP"]
+#     FLAG = data["FLAG"]
+#     numConnectOut = data["numConnectOut"]
+#     numNoConnectOut = data["numNoConnectOut"]
+#     numConnectIn = data["numConnectIn"]
+#     numNoConnectIn = data["numNoConnectIn"]
+#     nodesAverage = data["nodesAverage"]
+#     inOutDict = data["inOutDict"]
+
+#     # plot panel 1
+#     nodes_figure5.plot_panel_1(
+#         IN_OUT_THRESH, P_R, numConnectOut, numNoConnectOut, numConnectIn, numNoConnectIn
+#     )
+
+#     # plot panel 2
+#     nodes_figure5.plot_panel_2(IN_OUT_THRESH, P_R, nodesAverage)
