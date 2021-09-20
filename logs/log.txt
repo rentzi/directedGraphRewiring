@@ -4418,3 +4418,6 @@
 2021-09-20 20:23:56,447 - Iteration for in-out-thresh 30 took: 136.25358295440674
 2021-09-20 20:25:49,706 - Iteration for in-out-thresh 15 took: 594.2926778793335
 2021-09-20 20:26:27,305 - NumExpr defaulting to 8 threads.
+2021-09-20 20:29:09,178 - Iteration for in-out-thresh 20 took: 199.4703459739685
+2021-09-20 20:31:39,717 - Iteration for in-out-thresh 25 took: 150.53836011886597
+2021-09-20 20:34:00,616 - Iteration for in-out-thresh 30 took: 140.89907884597778
