@@ -1,0 +1,6 @@
+
+# raw data path
+directory_load: data/01_raw/
+
+# data path for the intermediate result that reproduce figure S4
+intermediate_data: data/02_intermediate/figureS4_data.pickle

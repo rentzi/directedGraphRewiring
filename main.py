@@ -1,7 +1,15 @@
 import os
 import sys
 import yaml
-from src.codebase.pipelines import figure2, figure3, figure4, figure5, figure6
+from src.codebase.pipelines import (
+    figure2,
+    figure3,
+    figure4,
+    figure5,
+    figure6,
+    figureS3,
+    figureS4,
+)
 
 
 def check_run_args(run_args):
