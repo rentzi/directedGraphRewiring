@@ -7,6 +7,7 @@ Ilias Rentzeperis, Steeve Laquitaine
 
 ```bash
 conda create -n dgr python==3.7      # create dgr virtual environment  
+conda activate dgr
 pip install -r src/requirements.txt  # install requirements.txt 
 ipython kernel install --name dgr    # create jupyter kernel for dgr
 ```
