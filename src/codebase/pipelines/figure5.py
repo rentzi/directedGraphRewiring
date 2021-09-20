@@ -141,26 +141,3 @@ def plot_figure(data: Dict[str, Any]):
 
         # plot panel 2
         nodes_figure5.plot_panel_2(IN_OUT_THRESH, P_R, nodesAverage)
-
-
-# def plot_figure(data: Dict[str, Any]):
-
-#     # get parameters
-#     IN_OUT_THRESH = data["IN_OUT_THRESH"]
-#     P_R = data["P_R"]
-#     REP = data["REP"]
-#     FLAG = data["FLAG"]
-#     numConnectOut = data["numConnectOut"]
-#     numNoConnectOut = data["numNoConnectOut"]
-#     numConnectIn = data["numConnectIn"]
-#     numNoConnectIn = data["numNoConnectIn"]
-#     nodesAverage = data["nodesAverage"]
-#     inOutDict = data["inOutDict"]
-
-#     # plot panel 1
-#     nodes_figure5.plot_panel_1(
-#         IN_OUT_THRESH, P_R, numConnectOut, numNoConnectOut, numConnectIn, numNoConnectIn
-#     )
-
-#     # plot panel 2
-#     nodes_figure5.plot_panel_2(IN_OUT_THRESH, P_R, nodesAverage)
