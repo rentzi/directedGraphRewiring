@@ -17,9 +17,16 @@ pip install -r src/requirements.txt  # install requirements.txt
 ipython kernel install --name dgr    # create jupyter kernel for dgr
 ```
 
-## run 
+## Run 
 
-Run analysis on raw data and create figure: 
+1. Create raw directed graphs data (can take up to 2 days)
+
+Open and run all cells of `1RunStoreDigraphs.ipynb`. After re-creating
+the raw data you can either:  
+   1. execute the analyses and plot the figures (1)
+   2. or directly plot the figures from the pre-stored analyses results.
+
+1. Run analyses on raw data and create figures: 
 
 ```bash
 python -m main --run figure2
@@ -31,7 +38,7 @@ python -m main --run figureS3
 python -m main --run figureS4
 ```
 
-Load intermediate analysis and plot figure:
+3. Or just load stored intermediate analyses and quickly re-create figures:
 
 ```bash
 python -m main --load figure2
