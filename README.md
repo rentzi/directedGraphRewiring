@@ -8,6 +8,8 @@ Ilias Rentzeperis, Steeve Laquitaine
 
 ## Setup
 
+Move to your project’s root directory.
+
 ```bash
 conda create -n dgr python==3.7      # create dgr virtual environment  
 conda activate dgr
