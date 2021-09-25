@@ -1,8 +1,12 @@
 import pickle
 import os
-import numpy as np
+import yaml
 
-# Utility functions
+
+def write_project_config(proj_path):
+    """Write project configuration"""
+    with open("project_context.yml", "w") as file:
+        yaml.dump({"project_path": proj_path}, file)
 
 
 def save_var(var, file_path):

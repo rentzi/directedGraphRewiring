@@ -1,6 +1,14 @@
 import os
 import sys
 import yaml
+
+# get project's path
+# write project config.
+from src.codebase.nodes import utils
+
+proj_path = os.getcwd()
+utils.write_project_config(proj_path)
+
 from src.codebase.pipelines import (
     figure2,
     figure3,
@@ -40,12 +48,6 @@ def check_run_args(run_args):
                 """
         )
     return 0
-
-
-def write_project_config():
-    """Write project configuration"""
-    with open("project_context.yml", "w") as file:
-        yaml.dump({"project_path": proj_path}, file)
 
 
 def run_pipeline(pipeline: str):
@@ -88,14 +90,8 @@ def load(pipeline=str):
 if __name__ == "__main__":
     """Entry point"""
 
-    # get project's path
-    proj_path = os.getcwd()
-
     # check run arguments
     check_run_args(sys.argv)
-
-    # write project config.
-    write_project_config()
 
     # run pipeline
     if sys.argv[1] == "--run":
