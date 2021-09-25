@@ -2,6 +2,9 @@
 
 Ilias Rentzeperis, Steeve Laquitaine
 
+## Prerequisites
+
+* `Conda` must be installed
 
 ## Setup
 
