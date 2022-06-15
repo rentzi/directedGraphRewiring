@@ -1,6 +1,10 @@
-# Directed Graph rewiring code
+# Convergent divergent unit
 
 Ilias Rentzeperis, Steeve Laquitaine
+
+<p align="center">
+  <img src="assets/cdhub.png" width="600" class="center">
+</p>
 
 Please cite the following paper:
 
