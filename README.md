@@ -3,7 +3,7 @@
 Ilias Rentzeperis, Steeve Laquitaine
 
 <p align="center">
-  <img src="assets/cdhub.png" width="600" class="center">
+  <img src="assets/cdhub.png" width="600">
 </p>
 
 Please cite the following paper:
