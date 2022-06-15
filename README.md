@@ -4,6 +4,7 @@ Ilias Rentzeperis, Steeve Laquitaine
 
 Please cite the following paper:
 
+```
 @article{rentzeperis2022adaptive,
   title={Adaptive rewiring of random neural networks generates convergent--divergent​ units},
   author={Rentzeperis, Ilias and Laquitaine, Steeve and van Leeuwen, Cees},
@@ -13,6 +14,7 @@ Please cite the following paper:
   year={2022},
   publisher={Elsevier}
 }
+```
 
 ## Prerequisites
 
